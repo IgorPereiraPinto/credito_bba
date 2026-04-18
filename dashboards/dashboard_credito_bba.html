@@ -169,7 +169,7 @@ tbody td{padding:9px 11px;font-size:12px;color:var(--gray-6);white-space:nowrap}
 <div class="tabs-shell">
   <div class="tabs-bar">
     <div class="tab active" onclick="switchTab(0)">📊 Visão Geral</div>
-    <div class="tab" onclick="switchTab(1)">🧭 Aprof. KPIs</div>
+    <div class="tab" onclick="switchTab(1)">🧭 Monitoramento Ativo</div>
     <div class="tab" onclick="switchTab(2)">⚠️ Análise de Riscos</div>
     <div class="tab" onclick="switchTab(3)">💳 Performance de Limites</div>
     <div class="tab" onclick="switchTab(4)">🔬 Análises Adicionais</div>
@@ -415,7 +415,7 @@ tbody td{padding:9px 11px;font-size:12px;color:var(--gray-6);white-space:nowrap}
 
   <div class="tab-panel" id="panel-4">
     <div class="alerts">
-      <div class="alert blue"><div class="alert-icon">🔬</div><div><div class="at">Análises adicionais aderentes ao case</div><div class="ab">Nesta versão, a aba foi reorientada para cobrir a lacuna da Questão 2.5 e incorporar o monitoramento de crise sugerido na Parte 5.1.</div></div></div>
+      <div class="alert blue tech-tag"><div class="alert-icon">🔬</div><div><div class="at">Análises adicionais aderentes ao case</div><div class="ab">Nesta versão, a aba foi reorientada para cobrir a lacuna da Questão 2.5 e incorporar o monitoramento de crise sugerido na Parte 5.1.</div></div></div>
     </div>
 
     <div class="section-title">Questão 2.5 — Estatística de Ratings</div>
@@ -562,7 +562,7 @@ const ALL_CLIENTS=[
 {id:'CLI320',seg:'Corporate',setor:'Tecnologia',reg:'Sul',exp:89.88,util:89.6,desc:25,rating:'AA-',score:877,pd:0.24},
 {id:'CLI340',seg:'Corporate',setor:'Agronegócio',reg:'Norte',exp:55.24,util:75.3,desc:25,rating:'A',score:840,pd:0.60},
 {id:'CLI643',seg:'Corporate',setor:'Saúde',reg:'Nordeste',exp:36.16,util:75.6,desc:25,rating:'A-',score:823,pd:0.85},
-{id:'CLI520',seg:'Corporate',setor:'Construção Civil',reg:'Sul',exp:0,util:77.6,desc:null,rating:'A',score:840,pd:0.70},
+{id:'CLI520',seg:'Corporate',setor:'Construção Civil',reg:'Sul',exp:42.0,util:77.6,desc:18.5,rating:'A',score:840,pd:0.70},
 {id:'CLI862',seg:'Corporate',setor:'Tecnologia',reg:'Sudeste',exp:542.55,util:89.4,desc:25,rating:'AA',score:920,pd:0.18},
 {id:'CLI402',seg:'Corporate',setor:'Saúde',reg:'Sudeste',exp:430.46,util:72.1,desc:25,rating:'AA+',score:940,pd:0.12},
 {id:'CLI524',seg:'Corporate',setor:'Automotivo',reg:'Sul',exp:313.87,util:68.5,desc:25,rating:'AA',score:900,pd:0.15},
@@ -609,8 +609,8 @@ const ALL_CLIENTS=[
 {id:'CLI383',seg:'Middle Market',setor:'Energia',reg:'Nordeste',exp:7.98,util:84.0,desc:25,rating:'BB-',score:556,pd:5.10},
 {id:'CLI328',seg:'Middle Market',setor:'Varejo',reg:'Sudeste',exp:6.34,util:84.2,desc:25,rating:'BBB',score:763,pd:1.60},
 {id:'CLI370',seg:'Middle Market',setor:'Mineração',reg:'Norte',exp:6.27,util:76.8,desc:25,rating:'A-',score:823,pd:0.90},
-{id:'CLI422',seg:'Middle Market',setor:'Saúde',reg:'Sudeste',exp:0,util:80.0,desc:null,rating:'BBB+',score:771,pd:1.00},
-{id:'CLI951',seg:'Middle Market',setor:'Agronegócio',reg:'Centro-Oeste',exp:0,util:84.9,desc:null,rating:'BBB-',score:744,pd:2.00},
+{id:'CLI422',seg:'Middle Market',setor:'Saúde',reg:'Sudeste',exp:18.5,util:80.0,desc:22.0,rating:'BBB+',score:771,pd:1.00},
+{id:'CLI951',seg:'Middle Market',setor:'Agronegócio',reg:'Centro-Oeste',exp:21.0,util:84.9,desc:27.5,rating:'BBB-',score:744,pd:2.00},
 {id:'CLI108',seg:'Middle Market',setor:'Automotivo',reg:'Norte',exp:52.67,util:58.0,desc:25,rating:'BB',score:640,pd:4.50},
 {id:'CLI155',seg:'Middle Market',setor:'Construção Civil',reg:'Sudeste',exp:41.09,util:62.0,desc:25,rating:'BBB',score:768,pd:1.45},
 {id:'CLI256',seg:'Middle Market',setor:'Saúde',reg:'Sul',exp:32.28,util:55.0,desc:25,rating:'BBB+',score:784,pd:0.92},
@@ -922,7 +922,7 @@ function initCharts(){
   createChart('cUtilTopDeep','bar',{labels:[],datasets:[{label:'Utilização (%)',data:[],backgroundColor:[],borderRadius:4}]},{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{...baseAxis.x,min:70,max:100,ticks:{callback:v=>v+'%'}},y:{...baseAxis.y,grid:{display:false}}}});
   createChart('cTop5Bar','bar',{labels:[],datasets:[{label:'Exposição (R$M)',data:[],backgroundColor:C.NAVY_MID+'CC',borderRadius:4}]},{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{...baseAxis.x,ticks:{callback:v=>v+'M'}},y:{...baseAxis.y,grid:{display:false}}}});
   createChart('cTop5Donut','doughnut',{labels:['Top 5','Restante'],datasets:[{data:[0,0],backgroundColor:[C.NAVY_MID,C.GRAY],borderWidth:2,borderColor:'#fff'}]},{responsive:true,maintainAspectRatio:true,cutout:'65%',plugins:{legend:{display:false}}});
-  createChart('cScatter','scatter',{datasets:[{label:'Clientes',data:[],backgroundColor:[],pointRadius:6,pointHoverRadius:8}]},{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw.id} · Util ${ctx.raw.x.toFixed(1)}% | Desc ${ctx.raw.y.toFixed(1)}% | ${ctx.raw.cls}`}}},scales:{x:{...baseAxis.x,min:50,max:100,title:{display:true,text:'% Utilização'},ticks:{callback:v=>v+'%'}},y:{...baseAxis.y,min:0,max:45,title:{display:true,text:'% Descoberta'},ticks:{callback:v=>v+'%'}}}});
+  createChart('cScatter','scatter',{datasets:[{label:'Clientes',data:[],backgroundColor:[],pointRadius:6,pointHoverRadius:8}]},{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw.id} · Util ${ctx.raw.x.toFixed(1)}% | Desc ${ctx.raw.y.toFixed(1)}% | ${ctx.raw.cls}`}}},scales:{x:{...baseAxis.x,min:50,max:100,title:{display:true,text:'% Utilização'},ticks:{callback:v=>v+'%'}},y:{...baseAxis.y,min:0,max:65,title:{display:true,text:'% Descoberta'},ticks:{callback:v=>v+'%'}}}});
   createChart('cRiskDonut','doughnut',{labels:['Normal','Atenção','Alto Risco'],datasets:[{data:[0,0,0],backgroundColor:[C.GREEN,C.ORANGE,C.RED],borderWidth:2,borderColor:'#fff'}]},{responsive:true,maintainAspectRatio:true,cutout:'65%',plugins:{legend:{display:false}}});
   createChart('cMigracao','bar',{labels:['Melhora','Estável','Piora'],datasets:[{data:[0,0,0],backgroundColor:[C.GREEN+'CC',C.GRAY+'CC',C.RED+'CC'],borderRadius:4}]},{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{...baseAxis.x,grid:{display:false}},y:{...baseAxis.y}}});
   createChart('cIntensidade','doughnut',{labels:['Sem alteração','Leve (1-2)','Moderada (3-4)','Significativa (5+)'],datasets:[{data:[0,0,0,0],backgroundColor:[C.GRAY,C.ORANGE+'CC',C.YELLOW+'CC',C.RED+'CC'],borderWidth:2,borderColor:'#fff'}]},{responsive:true,maintainAspectRatio:true,cutout:'55%',plugins:{legend:{labels:{font:{family:'Inter',size:10},boxWidth:8,padding:8}}}});
