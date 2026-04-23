@@ -49,19 +49,18 @@ Acesse o [Dashboard](https://igorpereirapinto.github.io/analise_de_credito/) pub
 
 ---
 
-## Como Navegar
+## Por Onde Comecar
 
-Se voce quer ver o resultado final:
+Existem quatro caminhos, dependendo do seu objetivo:
 
-- abrir o [Dashboard](https://igorpereirapinto.github.io/analise_de_credito/)
+| Objetivo | Tempo estimado | Ponto de entrada |
+| --- | --- | --- |
+| Ver o resultado | 2 minutos | [Dashboard publicado](https://igorpereirapinto.github.io/analise_de_credito/) |
+| Executar o projeto localmente | 30 a 60 minutos | [docs/como_executar.md](docs/como_executar.md) |
+| Estudar o projeto do zero | 4 horas a alguns dias | [roadmap/00_setup_local_e_git.md](roadmap/00_setup_local_e_git.md) |
+| Reutilizar para outro case | 1 a 2 horas | [docs/template_novo_case.md](docs/template_novo_case.md) |
 
-Se voce quer executar o projeto:
-
-- seguir [docs/como_executar.md](docs/como_executar.md)
-
-Se voce quer aprender o projeto passo a passo:
-
-- comecar por [roadmap/00_setup_local_e_git.md](roadmap/00_setup_local_e_git.md)
+Se voce chegou aqui pela primeira vez e quer entender o projeto em 5 minutos, comece pelo [Dashboard](https://igorpereirapinto.github.io/analise_de_credito/) e depois leia a secao **Fluxo do Projeto** abaixo.
 
 ---
 
@@ -217,34 +216,24 @@ O `roadmap/` funciona como workflow do projeto, do primeiro passo ao ultimo:
 
 ---
 
-## Analise Do Projeto E Oportunidades De Melhoria
+## Analise Do Projeto
 
-Pontos fortes atuais:
+Pontos fortes:
 
 - boa separacao entre ETL Python, SQL, dashboard e documentacao
-- existencia de suite de testes e runner unico (`run_etl.py`)
+- suite de testes com runner unico (`run_etl.py`)
 - trilha paralela `SQL Server` e `Athena`, o que aumenta reutilizacao
-- dashboard publicado, o que melhora portfolio e demonstracao
+- dashboard publicado no GitHub Pages
+- roadmap de 15 etapas como workflow de aprendizado estruturado
+- documentacao completa: arquitetura, regras de negocio, dicionario, FAQ e template de reutilizacao
 
-Oportunidades de melhoria para ficar ainda mais didatico:
+Melhorias implementadas:
 
-- transformar `roadmap/` em workflow universal, com setup local e Git antes da visao conceitual
-- explicitar melhor no README o caminho para quem quer apenas ver o resultado e para quem quer estudar
-- documentar, em cada etapa, o que e "editavel para reutilizacao" e o que e "infraestrutura fixa"
-- adicionar um guia de perguntas de negocio antes do ETL, para reforcar pensamento analitico e nao so execucao tecnica
-- incluir um checklist de entrada e saida por etapa, indicando quando a fase comeca e quando termina
-
-Oportunidades de melhoria para ficar mais funcional:
-
-- adicionar validacao automatica do `.env` e mensagens de erro mais guiadas
-- criar um `Makefile` ou `tasks` equivalentes para rodar ETL, testes e verificacoes com um comando
-- publicar um exemplo de saida esperada por etapa para facilitar debug
-
-Oportunidades de melhoria para ficar mais reutilizavel:
-
-- padronizar ainda mais os pontos de configuracao em constantes ou arquivos `.yaml`/`.json`
-- separar melhor o que e regra de negocio do que e regra tecnica
-- criar um template de "novo case" explicando quais arquivos devem ser clonados e quais devem ser reescritos
+- validacao automatica do `.env` com mensagens guiadas em `run_etl.py` — encerra com orientacao clara se o arquivo ou variavel estiver faltando
+- `Makefile` com comandos `make etl`, `make test`, `make check`, `make open` e `make clean`
+- checklists de entrada e saida por etapa em `docs/como_executar.md`
+- template de reutilizacao em `docs/template_novo_case.md` com mapa de clone vs reescrita
+- trilha explicita por perfil de usuario na secao **Por Onde Comecar** acima
 
 ---
 

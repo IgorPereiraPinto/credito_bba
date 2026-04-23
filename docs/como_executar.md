@@ -199,17 +199,29 @@ Regra simples:
 
 ## Passo 8 - Rodar o ETL Python
 
+**Entrada — o que deve estar pronto antes deste passo:**
+
+- ambiente virtual ativo (`.venv`)
+- `.env` configurado com `DATA_RAW_PATH` e `DATA_PROCESSED_PATH`
+- Excel em `data/raw/` no caminho definido no `.env`
+
 Forma recomendada:
 
 ```bash
 python run_etl.py
 ```
 
+Alternativa via Makefile:
+
+```bash
+make etl
+```
+
 Por que esta e a forma recomendada:
 
 - executa as 4 etapas em ordem
+- valida o `.env` automaticamente antes de iniciar
 - reduz erro operacional
-- representa a execucao oficial do pipeline local
 
 Execucao detalhada para estudo ou debug:
 
@@ -227,21 +239,36 @@ O que cada etapa faz:
 - `03_validate.py`: aplica regras de qualidade e negocio
 - `04_export.py`: gera arquivos prontos para carga
 
-Saidas esperadas em `data/processed/`:
+**Saida esperada — como saber que funcionou:**
 
-- `clientes.csv`
-- `operacoes.csv`
-- `ratings.csv`
-- `limites.csv`
-- `exposicoes.csv`
-- `validation_report.csv`
+- mensagem `Pipeline ETL concluído.` no terminal
+- arquivos gerados em `data/processed/`:
+  - `clientes.csv`
+  - `operacoes.csv`
+  - `ratings.csv`
+  - `limites.csv`
+  - `exposicoes.csv`
+  - `validation_report.csv`
+
+Se o `run_etl.py` encerrar com erro antes de iniciar, leia a mensagem: ela indica exatamente o que esta faltando no `.env` ou nos arquivos de entrada.
 
 ---
 
 ## Passo 9 - Rodar os testes
 
+**Entrada — o que deve estar pronto antes deste passo:**
+
+- ETL executado com sucesso (passo 8)
+- arquivos em `data/processed/` gerados
+
 ```bash
 pytest -q
+```
+
+Alternativa via Makefile:
+
+```bash
+make test
 ```
 
 Por que testar antes do SQL:
@@ -250,9 +277,22 @@ Por que testar antes do SQL:
 - valida regras essenciais do pipeline
 - melhora confianca antes da carga analitica
 
+**Saida esperada — como saber que funcionou:**
+
+- linha final do tipo `X passed in Y.Zs`
+- nenhum `FAILED` ou `ERROR` na saida
+
+Se houver falha, leia o nome do teste que falhou: ele indica qual etapa do pipeline (extract, clean, validate ou export) gerou o problema.
+
 ---
 
 ## Passo 10 - Executar o SQL Server
+
+**Entrada — o que deve estar pronto antes deste passo:**
+
+- SQL Server Developer Edition instalado e ativo
+- SSMS aberto com conexao ao servidor local
+- arquivos CSV em `data/processed/` prontos (passo 8)
 
 Ordem obrigatoria:
 
@@ -275,6 +315,12 @@ Por que nessa ordem:
 Atencao:
 
 - no `01_raw_insert.sql`, ajuste o caminho do `BULK INSERT` para a sua maquina
+
+**Saida esperada — como saber que funcionou:**
+
+- `00_ddl.sql`: banco `credito_ibba` criado, 5 tabelas visiveis no SSMS
+- `01_raw_insert.sql`: linhas carregadas sem erro (mensagem de rowcount para cada tabela)
+- `02_` ao `05_`: views criadas sem erro — execute `SELECT TOP 10 * FROM vw_kpi_exposicao` para validar
 
 ---
 
