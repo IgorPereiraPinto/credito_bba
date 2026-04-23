@@ -201,7 +201,7 @@
       <button class="tab active" type="button" data-target="visao" onclick="switchLandingTab('visao')">Visao do Projeto</button>
       <button class="tab" type="button" data-target="pipeline" onclick="switchLandingTab('pipeline')">Pipeline</button>
       <button class="tab" type="button" data-target="entregas" onclick="switchLandingTab('entregas')">Entregas</button>
-      <a class="tab" href="dashboards/dashboard_credito_bba.html">Dashboard</a>
+      <a class="tab" href="#" data-dashboard-link>Dashboard</a>
       <a class="tab" href="https://github.com/IgorPereiraPinto/analise_de_credito" target="_blank" rel="noopener">Repositorio</a>
     </div>
   </div>
@@ -219,7 +219,7 @@
               dashboard interativo em HTML.
             </p>
             <div class="hero-actions">
-              <a class="btn btn-secondary" href="dashboards/dashboard_credito_bba.html">Ir para o dashboard</a>
+              <a class="btn btn-secondary" href="#" data-dashboard-link>Ir para o dashboard</a>
             </div>
           </div>
           <div class="side-stack">
@@ -297,6 +297,30 @@
   </main>
 
   <script>
+    function resolveDashboardHref(){
+      const dashboardPath = 'dashboards/dashboard_credito_bba.html';
+      const { origin, pathname, protocol } = window.location;
+
+      if(protocol === 'file:'){
+        const basePath = pathname.replace(/[^/]*$/, '');
+        return decodeURI(basePath + dashboardPath);
+      }
+
+      const githubPagesMatch = pathname.match(/^\/([^/]+)\/([^/]+)(?:\/|$)/);
+      if(origin.includes('github.io') && githubPagesMatch){
+        return `/${githubPagesMatch[1]}/${githubPagesMatch[2]}/${dashboardPath}`;
+      }
+
+      const basePath = pathname.endsWith('/') ? pathname : pathname.replace(/[^/]*$/, '');
+      return `${basePath}${dashboardPath}`;
+    }
+
+    function applyDashboardLinks(){
+      const dashboardHref = resolveDashboardHref();
+      document.querySelectorAll('[data-dashboard-link]').forEach(link => {
+        link.setAttribute('href', dashboardHref);
+      });
+    }
     function switchLandingTab(tab){
       document.querySelectorAll('.landing-panel').forEach(panel => panel.classList.remove('active'));
       const targetPanel = document.getElementById('panel-' + tab);
@@ -306,6 +330,7 @@
         item.classList.toggle('active', item.dataset.target === tab);
       });
     }
+    applyDashboardLinks();
   </script>
 </body>
 </html>

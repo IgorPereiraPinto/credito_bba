@@ -67,6 +67,7 @@ body.exec-mode .tech-tag, body.exec-mode .tech-source {display:none!important}
 .filter-count{margin-left:auto;font-size:11px;color:var(--gray-4);background:var(--gray-1);padding:5px 10px;border-radius:999px;border:1px solid var(--gray-2);font-weight:600}
 .content{padding:16px;min-height:760px}
 .tab-panel{display:none}.tab-panel.active{display:block}
+.tab-panel > .section-title:first-child{margin-top:0}
 .section-title{font-size:11px;font-weight:800;color:var(--gray-4);text-transform:uppercase;letter-spacing:.8px;margin:16px 0 10px;display:flex;align-items:center;gap:8px}
 .section-title::after{content:'';flex:1;height:1px;background:var(--gray-2)}
 .section-badge{background:var(--orange-bg);color:var(--orange);font-size:10px;padding:2px 8px;border-radius:999px;border:1px solid rgba(236,112,0,.18);font-weight:700;text-transform:none;letter-spacing:0}
@@ -132,6 +133,22 @@ tbody td{padding:9px 11px;font-size:12px;color:var(--gray-6);white-space:nowrap}
 .nota{margin:0 16px 16px;padding:14px 16px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:12px;display:flex;align-items:flex-start;gap:10px;box-shadow:0 8px 18px rgba(13,27,42,.18)}
 .nota-text{font-size:11px;color:#D4DEE8;line-height:1.65}.nota-text strong{color:#FFD1A0}
 .empty-row td{text-align:center;color:var(--gray-4);font-style:italic;padding:20px}
+/* ── insight cards (extensão nativa dos cards existentes) ── */
+.insight-row{display:flex;gap:10px;flex-wrap:wrap}
+.kpi-grid + .insight-row,
+.g2 + .insight-row,
+.g3 + .insight-row,
+.g3b + .insight-row{margin-top:14px}
+.insight-row + .section-title{margin-top:14px}
+.insight-row .insight-card{flex:1;min-width:220px;padding:13px 15px}
+.insight-card.ic-red{border-left:3px solid var(--red);background:linear-gradient(155deg,rgba(192,57,43,.045) 0%,#fff 55%)}
+.insight-card.ic-yellow{border-left:3px solid var(--yellow);background:linear-gradient(155deg,rgba(180,83,9,.045) 0%,#fff 55%)}
+.insight-card.ic-green{border-left:3px solid var(--green);background:linear-gradient(155deg,rgba(26,127,75,.04) 0%,#fff 55%)}
+.insight-card.ic-blue{border-left:3px solid var(--blue-acc);background:linear-gradient(155deg,rgba(26,115,181,.04) 0%,#fff 55%)}
+.ic-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.55px;margin-bottom:4px;display:block}
+.ic-red .ic-lbl{color:var(--red)} .ic-yellow .ic-lbl{color:var(--yellow)} .ic-green .ic-lbl{color:var(--green)} .ic-blue .ic-lbl{color:var(--blue-acc)}
+.ic-title{font-size:12px;font-weight:700;color:var(--gray-6);margin-bottom:5px;display:block}
+.ic-body{font-size:11px;color:var(--gray-4);line-height:1.6}
 @media(max-width:1200px){.kpi-main,.kpi-6,.kpi-4,.kpi-3,.g2,.g3,.g3b,.glo-grid{grid-template-columns:1fr}}
 @media(max-width:900px){.header{height:auto;padding:12px 16px;align-items:flex-start;gap:12px;flex-direction:column}.header-right{flex-wrap:wrap}}
 </style>
@@ -227,6 +244,9 @@ tbody td{padding:9px 11px;font-size:12px;color:var(--gray-6);white-space:nowrap}
       <div class="kpi-card c-navy"><div class="kpi-label">Provisão Total Estimada</div><div class="kpi-value" id="k-prov-total">R$ 81,1 M</div><div class="kpi-footer"><span class="kpi-bench">PD pond. × Exp. Descoberta (LGD=100%)</span><span class="badge b-att">⚠ Monitorar</span></div></div>
     </div>
 
+    <!-- [INS-0] Leitura executiva dos KPIs principais — populada dinamicamente pelo JS -->
+    <div class="insight-row" id="insights-overview"></div>
+
     <div class="section-title">Provisão Necessária (PCLD) e Classificação de Risco <span class="section-badge tech-tag">camada semântica SQL</span></div>
     <div class="g2">
       <div class="card">
@@ -285,6 +305,9 @@ tbody td{padding:9px 11px;font-size:12px;color:var(--gray-6);white-space:nowrap}
         <canvas id="cRatingDist"></canvas>
       </div>
     </div>
+
+    <!-- [INS-1] Insights de concentração setorial e perfil de ratings -->
+    <div class="insight-row" id="insights-sector"></div>
   </div>
 
   <div class="tab-panel" id="panel-1">
@@ -294,6 +317,9 @@ tbody td{padding:9px 11px;font-size:12px;color:var(--gray-6);white-space:nowrap}
       <div class="kpi-card c-orange"><div class="kpi-label">Utilização Média</div><div class="kpi-value" id="k-util-main">65,0%</div><div class="kpi-footer"><span class="kpi-bench">Ideal: 60–75%</span><span class="badge b-ok" id="k-util-main-badge">✓ Ideal</span></div></div>
       <div class="kpi-card c-navy"><div class="kpi-label">Concentração Top 5</div><div class="kpi-value" id="k-top5">0,0%</div><div class="kpi-footer"><span class="kpi-bench" id="k-top5-exp">R$ 0,0 M concentrados</span><span class="badge b-ok" id="k-top5-badge">✓ Pulverizado</span></div></div>
     </div>
+
+    <!-- [INS-2] Insights de monitoramento ativo -->
+    <div class="insight-row" id="insights-monitoring"></div>
 
     <div class="section-title">Valor Vencido</div>
     <div class="g2">
@@ -355,6 +381,9 @@ tbody td{padding:9px 11px;font-size:12px;color:var(--gray-6);white-space:nowrap}
       </div>
     </div>
 
+    <!-- [INS-3] Insights da matriz de risco e migração -->
+    <div class="insight-row" id="insights-risk"></div>
+
     <div class="section-title">Clientes Prioritários</div>
     <div class="tcard">
       <div class="thdr"><span class="ttitle">Clientes em atenção / alto risco</span><span class="tcount" id="risk-count">24 registros</span></div>
@@ -387,6 +416,9 @@ tbody td{padding:9px 11px;font-size:12px;color:var(--gray-6);white-space:nowrap}
       <div class="kpi-card c-red"><div class="kpi-label">Clientes Acima de 85%</div><div class="kpi-value" id="k-85">7</div><div class="kpi-footer"><span class="kpi-bench">Meta: 0</span><span class="badge b-crit">✗ Crítico</span></div></div>
       <div class="kpi-card c-navy"><div class="kpi-label">Total Aprovado Ativo</div><div class="kpi-value" id="k-aprov">R$ 9,94 Bi</div><div class="kpi-footer"><span class="kpi-bench">Utilizado: <span id="k-utiliz">R$ 8,41 Bi</span></span><span class="badge b-info" id="k-aprov-badge">84,6%</span></div></div>
     </div>
+
+    <!-- [INS-4] Insights de performance de limites -->
+    <div class="insight-row" id="insights-limits"></div>
 
     <div class="section-title">Análise de Utilização</div>
     <div class="g3b">
@@ -1267,9 +1299,111 @@ function updateCrisisCharts(){
     ch.data.datasets[0].data=multipliers.map(m=>+(baseDesc*m*Math.max(1,severity)).toFixed(1));
   });
 }
+/* ── helpers de insight ── */
+function insightCard(color,lbl,title,body){
+  return `<div class="insight-card ic-${color}"><span class="ic-lbl">${lbl}</span><span class="ic-title">${title}</span><p class="ic-body">${body}</p></div>`;
+}
+function updateInsights(clients,kpis){
+  if(!clients) return;
+  const vencidas=getVencidas();
+  const sd=getSectorData(clients);
+  const overLimit=sd.filter(s=>s.pct>15);
+  const nearLimit=sd.filter(s=>s.pct>10&&s.pct<=15);
+  const urgentes=vencidas.filter(v=>v.pri&&v.pri.startsWith('1'));
+  const highUtil85=clients.filter(c=>c.util>85);
+  const corpClients=clients.filter(c=>c.seg==='Corporate');
+  const critQuad=clients.filter(c=>riskFlags(c).high);
+  const maxAging=vencidas.length?Math.max(...vencidas.map(v=>v.dias)):0;
+  const maxAgingRow=vencidas.length?vencidas.reduce((a,b)=>a.dias>b.dias?a:b,vencidas[0]):null;
+  const utilRate=kpis.aprov>0?(kpis.utiliz/kpis.aprov)*100:0;
+  const hrRatings=['BB+','BB','BB-','B+','B','B-','C'];
+  const ratingHighRisk=clients.filter(c=>hrRatings.includes(c.rating));
+  const ratingHRExp=ratingHighRisk.reduce((s,c)=>s+(c.exp||0),0);
+  const ratingHRPct=kpis.expTotal>0?(ratingHRExp/kpis.expTotal*100):0;
+  const migAmp=STATE.period==='3m'?0.7:STATE.period==='6m'?0.85:STATE.period==='all'?1.15:1;
+  const trends=clients.map(c=>{const d=(c.desc==null?25:c.desc); return (((c.util-70)/10)+((d-25)/6)+((780-c.score)/45)+ratingBucket(c.rating)-1)*migAmp;});
+  const pioraCount=trends.filter(v=>v>1.1).length;
+
+  /* Tab 0 — Visão Geral: leitura executiva dos KPIs principais */
+  const el0=document.getElementById('insights-overview');
+  if(el0){
+    const pdColor=kpis.pdAvg>=3?'red':kpis.pdAvg>=1?'yellow':'green';
+    const pdBody=`PD ponderada em ${kpis.pdAvg.toFixed(2).replace('.',',')}% — ${kpis.pdAvg.toFixed(1).replace('.',',')}× acima do limite de 1%. Provisão estimada em ${fmt(kpis.provTotal)} requer controle ativo, especialmente nos segmentos de maior risco.`;
+    const scoreColor=kpis.scoreAvg>=800?'green':kpis.scoreAvg>=750?'yellow':'red';
+    const corpAvg=corpClients.length?Math.round(corpClients.reduce((s,c)=>s+getAdjustedScore(c),0)/corpClients.length):0;
+    const scoreNote=corpClients.length&&corpAvg<800?` Corporate com score médio de ${corpAvg} pressiona a média para baixo.`:'';
+    const scoreBody=`Score médio em ${kpis.scoreAvg} — ${kpis.scoreAvg<800?'abaixo':'acima'} da meta de 800.${scoreNote} Acompanhar tendência mensal para antecipar degradação da carteira.`;
+    const vencColor=vencidas.length>10?'red':vencidas.length>0?'yellow':'green';
+    const urgNote=urgentes.length?` ${urgentes.length} operação(ões) com prioridade URGENTE.`:'';
+    const vencBody=vencidas.length?`${vencidas.length} operações vencidas no período.${urgNote} Valor em atraso: ${fmt(kpis.vencValor||0)}. Aging máximo de ${maxAging} dias — priorizar cobrança imediata.`:'Sem operações vencidas no recorte ativo. Risco materializado controlado.';
+    const descColor=kpis.descPct<30?'green':kpis.descPct<35?'yellow':'red';
+    const descBody=`Média de ${kpis.descPct.toFixed(1).replace('.',',')}% ${kpis.descPct<30?'dentro da meta':'acima da meta de 30%'}. Setores com menor cobertura de garantias concentram o risco residual acima da média setorial.`;
+    el0.innerHTML=[
+      insightCard(pdColor,'⚠ Provisão','PD acima da meta pressiona o nível de provisionamento',pdBody),
+      insightCard(scoreColor,'📊 Qualidade de Crédito','Score médio da carteira e risco de deterioração',scoreBody),
+      insightCard(vencColor,'⏳ Inadimplência','Risco materializado requer ação imediata de cobrança',vencBody),
+      insightCard(descColor,'🛡️ Cobertura','Exposição descoberta dentro da meta, mas assimétrica por setor',descBody)
+    ].join('');
+  }
+
+  /* Tab 0 — Concentração Setorial: risco regulatório e perfil de ratings */
+  const el1=document.getElementById('insights-sector');
+  if(el1){
+    const sectorColor=overLimit.length?'red':nearLimit.length?'yellow':'green';
+    const sectorTitle=overLimit.length?`${overLimit.length} setor(es) acima do limite regulatório de 15%`:nearLimit.length?`${nearLimit.length} setor(es) próximos do limite regulatório`:'Concentração setorial dentro dos limites regulatórios';
+    const sectorBody=overLimit.length?`${overLimit.map(s=>`${s.setor} (${s.pct.toFixed(1).replace('.',',')}%)`).join(', ')} supera(m) o limite de 15%. Risco de exigência regulatória e necessidade de redução de exposição antes de novas aprovações.`:nearLimit.length?`${nearLimit.map(s=>s.setor).join(', ')} próximos do teto de 15%. Monitorar antes de aprovar novas operações nos setores indicados.`:'Nenhum setor com concentração acima de 15%. Portfólio bem pulverizado setorialmente no recorte atual.';
+    const ratingColor=ratingHighRisk.length>8?'yellow':'blue';
+    const ratingBody=ratingHighRisk.length?`${ratingHighRisk.length} cliente(s) em grau especulativo ou abaixo, representando ${ratingHRPct.toFixed(1).replace('.',',')}% da exposição total. PCLD regulatória (CMN 2.682) tende a ser elevada para este grupo.`:'Nenhum cliente em grau especulativo no recorte atual. Carteira com perfil conservador de ratings.';
+    el1.innerHTML=[
+      insightCard(sectorColor,'🏭 Concentração Setorial',sectorTitle,sectorBody),
+      insightCard(ratingColor,'🏛️ Ratings e PCLD','Perfil de risco e impacto em provisão regulatória',ratingBody)
+    ].join('');
+  }
+
+  /* Tab 1 — Monitoramento Ativo: pressão de limite e aging */
+  const el2=document.getElementById('insights-monitoring');
+  if(el2){
+    const utilColor=highUtil85.length>5?'red':highUtil85.length>0?'yellow':'green';
+    const utilBody=highUtil85.length?`${highUtil85.length} cliente(s) com utilização acima de 85%. Esta faixa indica pressão de caixa ou dependência crítica do limite aprovado — avaliar renovação antecipada ou ampliação com análise de capacidade de pagamento.`:'Nenhum cliente acima de 85% no recorte atual. Carteira dentro dos parâmetros ideais de utilização de limite.';
+    const agingColor=maxAging>365?'red':maxAging>90?'yellow':vencidas.length>0?'yellow':'green';
+    const agingBody=vencidas.length?`Operação mais antiga com ${maxAging} dias de atraso${maxAgingRow?` (${maxAgingRow.id}, rating ${maxAgingRow.rating})`:''}. Aging elevado reduz chance de recuperação integral — acionar renegociação ou execução de garantias.`:'Nenhuma operação vencida no recorte selecionado. Risco de aging zerado no período.';
+    el2.innerHTML=[
+      insightCard(utilColor,'💳 Pressão de Limite',`${highUtil85.length} cliente(s) em zona crítica de utilização`,utilBody),
+      insightCard(agingColor,'⏳ Aging de Inadimplência','Tempo de atraso e impacto na probabilidade de recuperação',agingBody)
+    ].join('');
+  }
+
+  /* Tab 2 — Análise de Riscos: quadrante crítico e migração */
+  const el3=document.getElementById('insights-risk');
+  if(el3){
+    const critColor=critQuad.length>5?'red':critQuad.length>0?'yellow':'green';
+    const critBody=critQuad.length?`${critQuad.length} cliente(s) no quadrante crítico (util > 80% e descoberta > 30%). A combinação de alta utilização com baixa cobertura eleva significativamente a perda esperada — priorizar análise individual.`:'Nenhum cliente no quadrante de alto risco no recorte atual. Bom perfil de cobertura e utilização combinados.';
+    const migColor=pioraCount>clients.length*0.3?'red':pioraCount>0?'yellow':'green';
+    const migBody=pioraCount?`${pioraCount} cliente(s) com tendência de piora de rating no período ${pc().label}. Monitorar rollover de operações nos segmentos com maior concentração de ratings especulativos e renovações próximas do vencimento.`:'Nenhuma tendência significativa de piora de rating no período. Carteira estável no recorte selecionado.';
+    el3.innerHTML=[
+      insightCard(critColor,'🎯 Quadrante Crítico',`${critQuad.length} cliente(s) com dupla exposição: alta utilização e baixa cobertura`,critBody),
+      insightCard(migColor,'📈 Migração de Rating','Tendência de degradação e impacto em rollover de operações',migBody)
+    ].join('');
+  }
+
+  /* Tab 3 — Performance de Limites: criticalidade e capacidade */
+  const el4=document.getElementById('insights-limits');
+  if(el4){
+    const above85Color=kpis.above85>5?'red':kpis.above85>0?'yellow':'green';
+    const above85Body=kpis.above85>0?`${kpis.above85} cliente(s) acima de 85% de utilização. Faixa de risco de covenant — avaliar capacidade de pagamento e viabilidade de renovação antes do vencimento das operações.`:'Nenhum cliente acima de 85% no recorte. Carteira dentro dos parâmetros ideais de utilização de limite.';
+    const utilizColor=utilRate>87?'red':utilRate>=60?'green':'blue';
+    const utilizBody=`Taxa global de ${utilRate.toFixed(1).replace('.',',')}% sobre ${fmt(kpis.aprov)} aprovados. ${utilRate>87?'Margem de folga reduzida — limitar novas aprovações e monitorar vencimentos próximos.':utilRate>=60?'Capacidade operacional preservada. Margem disponível para novos desembolsos seletivos e bem avaliados.':'Utilização abaixo do ideal — avaliar eficiência do limite aprovado por cliente e segmento.'}`;
+    el4.innerHTML=[
+      insightCard(above85Color,'💳 Criticalidade de Limite',`${kpis.above85} cliente(s) na faixa de alerta máximo de utilização`,above85Body),
+      insightCard(utilizColor,'📊 Capacidade da Carteira','Relação aprovado vs utilizado e margem para novos desembolsos',utilizBody)
+    ].join('');
+  }
+}
+
 function updateAll(){
   const clients=getClients(), kpis=computeKPIs(clients);
   updateTexts(clients,kpis); updateKPIs(clients,kpis); updateAlerts(clients,kpis);
+  updateInsights(clients,kpis);
   updateDeepDiveKPIs(clients,kpis);
   updateRiskTable(clients); updateVencidasTable();
   updateClassifProvCharts(clients); updateScoreChart(clients); updateSegDonut(clients); updateSectorBar(clients); updateRatingChart(clients);
