@@ -1,4 +1,4 @@
-# Power BI DAX - credito_bba
+# Power BI DAX - analise_de_credito
 
 Pacote de DAX alinhado ao layout atual do dashboard do projeto.
 

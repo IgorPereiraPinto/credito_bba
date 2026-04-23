@@ -1,63 +1,217 @@
-# Como Executar — credito_bba
+# Como Executar - analise_de_credito
 
-Guia passo a passo para rodar o pipeline completo localmente (SQL Server) ou na AWS (Athena).
+Guia passo a passo para rodar o projeto com contexto didatico: o que fazer, em que ordem fazer, em qual ferramenta fazer e por que essa ordem faz sentido.
 
 ---
 
-## Pré-requisitos
+## Visao Rapida Da Sequencia
+
+```text
+1. preparar pasta e Git
+2. abrir e entender as bases
+3. abrir o projeto no VS Code
+4. criar ambiente virtual Python
+5. instalar bibliotecas
+6. configurar .env
+7. rodar ETL Python
+8. rodar testes
+9. rodar SQL
+10. abrir dashboard
+11. publicar e documentar
+```
+
+---
+
+## Pre-Requisitos
 
 - Python 3.11+
 - Git
-- Para SQL Server: SQL Server Developer Edition (gratuito) + SSMS
+- VS Code
+- Para SQL Server: SQL Server Developer Edition + SSMS
 - Para Athena: conta AWS com acesso a S3, Glue e Athena
-- Arquivo `dados_sinteticos_case.xlsx` disponível
+- Arquivo `dados_sinteticos_case.xlsx`
 
 ---
 
-## Execução local (SQL Server)
+## Passo 1 - Preparar a pasta e o repositorio
 
-### 1. Clonar e configurar o ambiente
+Se o projeto ja existe no GitHub:
 
 ```bash
-git clone https://github.com/IgorPereiraPinto/credito_bba.git
-cd credito_bba
+git clone https://github.com/IgorPereiraPinto/analise_de_credito.git
+cd analise_de_credito
+```
+
+Por que comecar com `git clone`:
+
+- baixa a estrutura correta
+- mantem o nome da pasta igual ao nome do repositorio
+- traz historico e documentacao junto
+
+Se o projeto fosse criado do zero:
+
+```bash
+mkdir analise_de_credito
+cd analise_de_credito
+git init
+```
+
+---
+
+## Passo 2 - Abrir e analisar a base antes do codigo
+
+Antes do ETL, entenda o dado.
+
+O que verificar na base:
+
+- quais abas ou arquivos existem
+- qual e a granularidade de cada tabela
+- quais campos sao chave
+- quais colunas representam valor, data, status, score, rating e exposicao
+- onde estao os campos que sustentam os KPIs do dashboard
+
+Perguntas de negocio recomendadas:
+
+1. quem e a entidade principal da analise?
+2. quais riscos o negocio quer monitorar?
+3. o que caracteriza uma carteira saudavel?
+4. o que caracteriza uma carteira em atencao?
+5. quais campos permitem medir limite, utilizacao, inadimplencia, score e probabilidade de default?
+
+---
+
+## Passo 3 - Abrir no VS Code
+
+Comando:
+
+```bash
+code .
+```
+
+Se `code .` nao funcionar, abra a pasta manualmente no VS Code.
+
+Por que isso vem cedo:
+
+- voce ganha navegacao rapida entre docs, scripts e SQL
+- terminal e codigo ficam no mesmo contexto
+- fica mais facil alternar entre execucao e leitura
+
+---
+
+## Passo 4 - Criar o ambiente Python
+
+Comando:
+
+```bash
 python -m venv .venv
-.venv\Scripts\activate          # Windows
+```
+
+Ativacao:
+
+```bash
+.venv\Scripts\activate
+```
+
+No Linux/Mac:
+
+```bash
+source .venv/bin/activate
+```
+
+Por que essa etapa existe:
+
+- isola dependencias do projeto
+- evita poluir o Python global
+- melhora reprodutibilidade
+
+---
+
+## Passo 5 - Instalar as bibliotecas
+
+```bash
 pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+Por que nessa ordem:
+
+- `requirements.txt` faz o projeto rodar
+- `requirements-dev.txt` adiciona testes e apoio ao desenvolvimento
+
+Bibliotecas principais do projeto:
+
+- `pandas`
+- `openpyxl`
+- `python-dotenv`
+- `loguru`
+- `pytest`
+
+---
+
+## Passo 6 - Configurar o `.env`
+
+Windows:
+
+```bash
+copy .env.example .env
+```
+
+Linux/Mac:
+
+```bash
 cp .env.example .env
 ```
 
-Edite o `.env` com os dados da sua conexão SQL Server:
+Depois disso, revise:
 
-```
-SQLSERVER_HOST=localhost
-SQLSERVER_DATABASE=credito_ibba
-SQLSERVER_USER=seu_usuario
-SQLSERVER_PASSWORD=sua_senha
-```
+- caminho da base bruta
+- pasta de saida processada
+- formato de exportacao
+- conexao SQL Server, se aplicavel
+- parametros AWS/Athena, se aplicavel
 
-> **Nota sobre o nome do banco:** `credito_ibba` é o nome do banco de dados definido no DDL,
-> derivado do case original (Itaú BBA/IBBA). O repositório chama-se `credito_bba`.
-> Para adaptar a outro contexto, troque `credito_ibba` por `credito_bba` (ou outro nome)
-> nos arquivos `sql/sqlserver/00_ddl.sql` e `sql/sqlserver/02_stage_views.sql` — ou
-> simplesmente mantenha `credito_ibba` como nome do banco sem impacto funcional.
+---
 
-### 2. Copiar o Excel para data/raw/
+## Passo 7 - O que fazer no terminal e o que fazer no codigo
 
-```bash
-# Coloque dados_sinteticos_case.xlsx em:
-data/raw/dados_sinteticos_case.xlsx
-```
+No terminal:
 
-### 3. Executar o ETL Python
+- ativar ambiente virtual
+- instalar dependencias
+- rodar ETL
+- rodar testes
+- executar Git
 
-**Forma recomendada — pipeline completo:**
+No codigo:
+
+- ajustar regras de extracao
+- ajustar limpeza e tipagem
+- ajustar validacoes
+- adaptar SQL
+- ajustar dashboard e documentacao
+
+Regra simples:
+
+- terminal executa
+- codigo define a logica
+
+---
+
+## Passo 8 - Rodar o ETL Python
+
+Forma recomendada:
 
 ```bash
 python run_etl.py
 ```
 
-**Alternativa — script a script** (útil para debug ou reexecução parcial):
+Por que esta e a forma recomendada:
+
+- executa as 4 etapas em ordem
+- reduz erro operacional
+- representa a execucao oficial do pipeline local
+
+Execucao detalhada para estudo ou debug:
 
 ```bash
 python python/01_extract.py
@@ -66,114 +220,140 @@ python python/03_validate.py
 python python/04_export.py
 ```
 
-Após a execução, verifique `data/processed/`:
+O que cada etapa faz:
 
-- `clientes.csv`, `operacoes.csv`, `ratings.csv`, `limites.csv`, `exposicoes.csv`
-- `validation_report.csv` — relatório de inconsistências encontradas
+- `01_extract.py`: le o Excel e valida estrutura minima
+- `02_clean.py`: limpa, tipa e padroniza os dados
+- `03_validate.py`: aplica regras de qualidade e negocio
+- `04_export.py`: gera arquivos prontos para carga
 
-### 4. Executar o SQL Server (ordem obrigatória)
+Saidas esperadas em `data/processed/`:
 
-Abra o SSMS e execute os arquivos na seguinte ordem:
-
-```text
-sql/sqlserver/00_ddl.sql          ← cria banco e tabelas
-sql/sqlserver/01_raw_insert.sql   ← carrega dados (ajuste o path do BULK INSERT)
-sql/sqlserver/02_stage_views.sql  ← cria views STAGE
-sql/sqlserver/03_dw_views.sql     ← cria views DW
-sql/sqlserver/04_queries_analiticas.sql  ← executa queries do case
-sql/sqlserver/05_views_kpi.sql    ← cria camada semântica para Power BI
-```
-
-> **Dica:** No arquivo `01_raw_insert.sql`, substitua `C:\caminho\para\data\processed\`
-> pelo caminho absoluto real no seu sistema.
-
-### 5. Verificar resultado
-
-Execute no SSMS:
-
-```sql
-USE credito_ibba;
-SELECT 'clientes'  AS t, COUNT(*) AS n FROM clientes  UNION ALL
-SELECT 'operacoes',      COUNT(*)       FROM operacoes UNION ALL
-SELECT 'ratings',        COUNT(*)       FROM ratings   UNION ALL
-SELECT 'limites',        COUNT(*)       FROM limites   UNION ALL
-SELECT 'exposicoes',     COUNT(*)       FROM exposicoes;
-```
-
-Resultado esperado com dados sintéticos: `72 / 222 / 864 / 92 / 432`.
+- `clientes.csv`
+- `operacoes.csv`
+- `ratings.csv`
+- `limites.csv`
+- `exposicoes.csv`
+- `validation_report.csv`
 
 ---
 
-## Execução na AWS (Athena)
-
-### 1. Configurar credenciais AWS
+## Passo 9 - Rodar os testes
 
 ```bash
-cp .env.example .env
-# Preencha:
-# AWS_ACCESS_KEY_ID=...
-# AWS_SECRET_ACCESS_KEY=...
-# AWS_REGION=us-east-1
-# ATHENA_S3_DATA=s3://seu-bucket/trusted/
-# ATHENA_S3_OUTPUT=s3://seu-bucket/athena-results/
+pytest -q
 ```
 
-### 2. Executar o ETL Python com formato Parquet
+Por que testar antes do SQL:
 
-```bash
-# No .env, altere:
-# EXPORT_FORMAT=parquet
+- garante que a base exportada nao foi produzida com erro silencioso
+- valida regras essenciais do pipeline
+- melhora confianca antes da carga analitica
 
-python python/01_extract.py
-python python/02_clean.py
-python python/03_validate.py
-python python/04_export.py
-```
+---
 
-### 3. Upload dos Parquet para S3
+## Passo 10 - Executar o SQL Server
 
-```bash
-aws s3 cp data/processed/clientes.parquet  s3://seu-bucket/trusted/clientes/
-aws s3 cp data/processed/operacoes.parquet s3://seu-bucket/trusted/operacoes/
-aws s3 cp data/processed/ratings.parquet   s3://seu-bucket/trusted/ratings/
-aws s3 cp data/processed/limites.parquet   s3://seu-bucket/trusted/limites/
-aws s3 cp data/processed/exposicoes.parquet s3://seu-bucket/trusted/exposicoes/
-```
-
-### 4. Executar o DDL e as views no Athena
-
-No Athena Query Editor, execute na ordem:
+Ordem obrigatoria:
 
 ```text
-sql/athena/00_ddl_external.sql   ← registra tabelas no Glue Catalog
-sql/athena/02_stage_views.sql    ← views STAGE
-sql/athena/03_dw_views.sql       ← views DW
+sql/sqlserver/00_ddl.sql
+sql/sqlserver/01_raw_insert.sql
+sql/sqlserver/02_stage_views.sql
+sql/sqlserver/03_dw_views.sql
+sql/sqlserver/04_queries_analiticas.sql
+sql/sqlserver/05_views_kpi.sql
+```
+
+Por que nessa ordem:
+
+- primeiro cria banco e tabelas
+- depois carrega os dados processados
+- depois cria as camadas enriquecidas
+- por fim disponibiliza queries e KPIs de consumo
+
+Atencao:
+
+- no `01_raw_insert.sql`, ajuste o caminho do `BULK INSERT` para a sua maquina
+
+---
+
+## Passo 11 - Executar a versao Athena
+
+Se o alvo for AWS/Athena, ajuste o `.env` e rode o ETL com `EXPORT_FORMAT=parquet`.
+
+Depois execute:
+
+```text
+sql/athena/00_ddl_external.sql
+sql/athena/02_stage_views.sql
+sql/athena/03_dw_views.sql
 sql/athena/04_queries_analiticas.sql
-sql/athena/05_views_kpi.sql      ← camada semântica para QuickSight
+sql/athena/05_views_kpi.sql
 ```
 
 ---
 
-## Abrir o dashboard HTML
+## Passo 12 - Abrir o dashboard
+
+Opcao publicada:
+
+- [Dashboard no GitHub Pages](https://igorpereirapinto.github.io/analise_de_credito/)
+
+Opcao local:
 
 ```bash
-# Basta abrir no navegador — não precisa de servidor
-start dashboards/dashboard_credito_bba.html   # Windows
-open  dashboards/dashboard_credito_bba.html   # Mac
+start dashboards/dashboard_credito_bba.html
+```
+
+No Mac:
+
+```bash
+open dashboards/dashboard_credito_bba.html
 ```
 
 ---
 
-## Resolução de problemas
+## Passo 13 - Versionar no Git
 
-**Erro: "Arquivo não encontrado"** → Verifique se `DATA_RAW_PATH` no `.env` aponta
-para o local correto do Excel.
+Comandos basicos:
 
-**BULK INSERT falha no SSMS** → Verifique se o serviço SQL Server tem permissão de
-leitura no diretório. Alternativa: use o Import Wizard do SSMS.
+```bash
+git status
+git add .
+git commit -m "feat: executa pipeline e atualiza documentacao"
+git pull origin master
+git push origin master
+```
 
-**Athena: "TABLE_NOT_FOUND"** → Execute `00_ddl_external.sql` antes das views.
-O Glue Crawler pode ser necessário se os arquivos ainda não foram reconhecidos.
+Justificativa da ordem:
 
-**Python: ModuleNotFoundError** → Ative o virtualenv e reinstale:
-`pip install -r requirements.txt`
+1. `git status` para entender o estado atual
+2. `git add` para selecionar o que vai entrar no commit
+3. `git commit` para registrar uma unidade de trabalho
+4. `git pull` para alinhar com o remoto antes de publicar
+5. `git push` para enviar e, quando aplicavel, disparar o GitHub Pages
+
+---
+
+## Onde o processo termina
+
+O processo termina quando:
+
+- ETL roda com sucesso
+- testes passam
+- SQL entrega a camada analitica
+- KPIs batem com a regra de negocio
+- dashboard abre corretamente
+- documentacao explica como repetir tudo
+
+Se a ideia for estudar o projeto inteiro, siga o workflow da pasta [roadmap/](../roadmap/).
+
+---
+
+## Proximos Guias
+
+- [roadmap/00_setup_local_e_git.md](../roadmap/00_setup_local_e_git.md)
+- [roadmap/03_analise_da_base_excel.md](../roadmap/03_analise_da_base_excel.md)
+- [roadmap/05_etl_extracao.md](../roadmap/05_etl_extracao.md)
+- [roadmap/14_como_reutilizar_o_projeto.md](../roadmap/14_como_reutilizar_o_projeto.md)

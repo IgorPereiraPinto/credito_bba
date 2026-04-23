@@ -2,7 +2,19 @@
 
 Pipeline de dados ponta a ponta para analise de portfolio de credito corporativo, construido como case tecnico com foco em 3 objetivos: ser didatico, funcional e reutilizavel.
 
+## Visao Geral
+
+Este repositorio cobre o fluxo completo:
+
+`Excel -> Python ETL -> SQL em 3 camadas -> views analiticas -> dashboard executivo`
+
+O desafio do projeto e transformar cinco tabelas de origem (`clientes`, `operacoes`, `ratings`, `limites`, `exposicoes`) em indicadores acionaveis para comite de credito, mantendo uma trilha clara do dado bruto ate o consumo analitico.
+
+---
+
 ![Performance de limites do dashboard](docs/assets/dashboard-performance-limites.png)
+
+---
 
 ## Insights Do Dashboard
 
@@ -24,16 +36,6 @@ Principais contribuicoes para tomada de decisao:
 - antecipar sinais de deterioracao operacional da carteira
 
 Acesse o [Dashboard](https://igorpereirapinto.github.io/analise_de_credito/) publicado no GitHub Pages.
-
----
-
-## Visao Geral
-
-Este repositorio cobre o fluxo completo:
-
-`Excel -> Python ETL -> SQL em 3 camadas -> views analiticas -> dashboard executivo`
-
-O desafio do projeto e transformar cinco tabelas de origem (`clientes`, `operacoes`, `ratings`, `limites`, `exposicoes`) em indicadores acionaveis para comite de credito, mantendo uma trilha clara do dado bruto ate o consumo analitico.
 
 ---
 

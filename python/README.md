@@ -1,4 +1,4 @@
-# Python ETL — credito_bba
+# Python ETL — analise_de_credito
 
 Scripts de extração, limpeza, validação e exportação dos dados de crédito corporativo.
 

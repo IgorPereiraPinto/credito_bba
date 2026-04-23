@@ -1,4 +1,4 @@
-# Dicionário de Dados — credito_bba
+# Dicionário de Dados — analise_de_credito
 
 ## Tabela: clientes
 

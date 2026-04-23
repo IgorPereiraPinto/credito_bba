@@ -1,4 +1,4 @@
-# Arquitetura do Pipeline — credito_bba
+# Arquitetura do Pipeline — analise_de_credito
 
 ## Visão geral
 

@@ -1,4 +1,4 @@
-# Regras de Negócio — credito_bba
+# Regras de Negócio — analise_de_credito
 
 ## KPIs e benchmarks
 

@@ -1,4 +1,4 @@
-# credito_bba — Dependências de desenvolvimento
+# analise_de_credito — Dependências de desenvolvimento
 # Instale com: pip install -r requirements-dev.txt
 
 -r requirements.txt

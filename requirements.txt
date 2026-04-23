@@ -1,4 +1,4 @@
-# credito_bba — Dependências de produção
+# analise_de_credito — Dependências de produção
 # Instale com: pip install -r requirements.txt
 
 # Manipulação de dados
