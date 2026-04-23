@@ -10,7 +10,7 @@ por ele antes de começar a execução.
 ## O que é o credito_bba
 
 Um pipeline de dados ponta a ponta para análise de portfólio de crédito corporativo,
-construído a partir de um case técnico real do Itaú BBA.
+construído a partir de um case técnico com dados fictícios.
 
 Ele resolve um problema concreto: transformar dados brutos de um Excel com 5 tabelas
 relacionadas em KPIs acionáveis para o Comitê de Crédito — com SQL, Python e um
